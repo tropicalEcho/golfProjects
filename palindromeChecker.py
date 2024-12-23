@@ -1,0 +1,1 @@
+while True: exit() if (cmd := input("~$ ")).lower() == "exit" else print("It's A Palindrome" if cmd == cmd[::-1] else "Not A Palinedrome")
