@@ -1,30 +1,29 @@
-import random, os, sys
-
-WINS = {"ROCK": ["SCISSORS", "LIZARD"], "PAPER": ["ROCK", "SPOCK"], "SCISSORS": ["PAPER", "LIZARD"], "LIZARD": ["PAPER", "SPOCK"], "SPOCK": ["SCISSORS", "ROCK"]}
+import random, sys, os, time
 
 def clear(): os.system("cls" if os.name == "nt" else "clear")
 
+CHARACTERS = ["ROCK", "PAPER", "SCISSORS", "LIZARD", "SPOCK"]; COMMANDS = ["CLEAR", "CLS", "EXIT", "QUIT", "HELP", "H", "MANUAL", "GUIDE", "SHELDON"]; WINS = {"ROCK": ["SCISSORS", "LIZARD"], "PAPER": ["ROCK", "SPOCK"], "SCISSORS": ["PAPER", "LIZARD"], "LIZARD": ["PAPER", "SPOCK"], "SPOCK": ["SCISSORS", "ROCK"]}
+regularHelp = "COMMANDS:\nCLEAR | CLS                  CLEARS THE SCREEN\nEXIT | QUIT                  KILLS THE GAME\nHELP | H                     PRINTS THIS\nMANUAL | GUIDE | SHELDON     SUMMONS SHELDON FOR HELP\n\nGUIDE:\nENTER ( SINGLE | SINGLEPLAYER | 1 | ONE | MONO ) IF YOU WANNA PLAY AGAINST COMPUTER\nENTER ( MULTI | MULTIPLAYER | 2 | TWO | BI | DUO ) IF YOU WANNA PLAY AGAINST A HUMAN"; sheldonHelp = "SCISSORS cuts PAPER\nPAPER covers ROCK\nROCK crushes LIZARD\nLIZARD poisons SPOCK\nSPOCK smashes SCISSORS\nSCISSORS decapitates LIZARD\nLIZARD eats PAPER\nPAPER disproves SPOCK\nSPOCK vaporizes ROCK\nand as it always has\nROCK crushes SCISSORS"
+
+def handleCommands(command): clear() if command in ["CLEAR", "CLS"] else sys.exit("GOODBYE!") if command in ["EXIT", "QUIT"] else print(regularHelp) if command in ["HELP", "H"] else print(sheldonHelp) if command in ["MANUAL", "GUIDE", "SHELDON"] else ""; return True if command in ["CLEAR", "CLS", "EXIT", "QUIT", "HELP", "H", "MANUAL", "GUIDE", "SHELDON"] else False
+
 def getChoice(prompt):
     while True:
-        choice = input(prompt).strip().upper()
-        if choice in ["ROCK", "PAPER", "SCISSORS", "LIZARD", "SPOCK"]: return choice
-        if choice in ["EXIT", "QUIT"]: sys.exit("GOODBYE!")
-        if choice in ["CLEAR", "CLS"]: clear()
-        else: print("INVALID CHOICE!")
+        if handleCommands(choice := input(prompt).strip().upper()): continue
+        if choice in CHARACTERS: return choice
+        print("INVALID CHOICE!")
 
-def play(player1, player2, isAlone):
-    print(f"COMPUTER: {player2}\n" if isAlone else "")
-    if player1 == player2: print("TIE!")
-    elif player2 in WINS[player1]: print(f"PLAYER 1 WINS!")
-    else: print("PLAYER 2 WINS!")
+def playGame(p1, p2, single):
+    if single: time.sleep(random.uniform(0.6, 1.6)); print(f"COMPUTER: {p2}")
+    print("TIE!" if p1 == p2 else "YOU WON!" if p2 in WINS[p1] else "YOU LOST!" if single else "PLAYER 1 WINS!" if p2 in WINS[p1] else "PLAYER 2 WINS!")
 
 clear()
-
 while True:
-    if mode := input("SINGLEPLAYER | MULTIPLAYER: ").strip().upper() in ["SINGLE", "1"]:
-        while True: play(getChoice("PLAYER: "), random.choice(["ROCK", "PAPER", "SCISSORS", "LIZARD", "SPOCK"]), True)
-    elif mode in ["MULTI", "2"]:
-        player1 = getChoice("PLAYER 1: "); clear()
-        while True: play(player1, getChoice("PLAYER 2: "), False)
+    mode = input("SINGLEPLAYER | MULTIPLAYER: ").strip().upper()
+    if handleCommands(mode): continue
+    if mode not in ["SINGLE", "1", "MULTI", "2"]: print("INVALID CHOICE!"); continue
 
-    else: print("INVALID MODE!")
+    single = mode in ["SINGLE", "1"]
+    while True:
+        if single: playGame(getChoice("PLAYER: "), random.choice(CHARACTERS), True)
+        else: p1 = getChoice("PLAYER 1: "); clear(); p2 = getChoice("PLAYER 2: "); clear(); playGame(p1, p2, False)
