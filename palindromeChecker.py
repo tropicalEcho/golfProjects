@@ -1,1 +1,1 @@
-while True: exit() if (cmd := input("~$ ")).lower() == "exit" else print("It's A Palindrome" if cmd == cmd[::-1] else "Not A Palinedrome")
+while True: import os, sys; sys.exit("GOODBYE!") if (cmd := input("~$ ")).lower() == "exit" else os.system("cls" if os.name == "nt" else "clear") if cmd.lower() in ["clear", "cls"] else print("It's A Palindrome" if cmd == cmd[::-1] else "Not A Palinedrome")
